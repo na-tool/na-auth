@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>&#x6743;&#x9650;&#x8ba4;&#x8bc1;&#x6a21;&#x5757;</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h3 id="权限认证模块">权限认证模块</h3>
+<pre><code class="language-text">本版本发布时间为 2021-05-01  适配jdk版本为 1.8
+</code></pre>
+<h4 id="1-配置">1 配置</h4>
+<h5 id="11-添加依赖">1.1 添加依赖</h5>
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.na&lt;/groupId&gt;
+    &lt;artifactId&gt;na-auth&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;
+        
+或者
+
+&lt;dependency&gt;
+    &lt;groupId&gt;com.na&lt;/groupId&gt;
+    &lt;artifactId&gt;na-auth&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+    &lt;scope&gt;system&lt;/scope&gt;
+    &lt;systemPath&gt;${project.basedir}/../lib/na-auth-1.0.0.jar&lt;/systemPath&gt;
+&lt;/dependency&gt;
+
+相关依赖
+
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h5 id="12-配置">1.2 配置</h5>
+<pre><code class="language-yaml"><span class="hljs-attr">na:</span>
+  <span class="hljs-attr">auth:</span>
+    <span class="hljs-attr">key:</span> <span class="hljs-string">秘钥需要申请</span>
+</code></pre>
+<h5 id="13-使用">1.3 使用</h5>
+<pre><code class="language-java"><span class="hljs-keyword">import</span> com.na.auth.NaAutoAuthConfig;
+<span class="hljs-keyword">import</span> com.na.auth.model.AuthSysRoleModel;
+<span class="hljs-keyword">import</span> com.na.auth.model.AuthUserModel;
+<span class="hljs-keyword">import</span> com.na.auth.service.INaAuthCheckedService;
+<span class="hljs-keyword">import</span> com.na.auth.utils.NaAuthUtil;
+<span class="hljs-keyword">import</span> com.na.common.cache.NaCacheTemplate;
+<span class="hljs-keyword">import</span> com.na.common.constant.INaGlobalConst;
+<span class="hljs-keyword">import</span> com.na.common.utils.NaJwtUtil;
+<span class="hljs-keyword">import</span> com.na.common.constants.MyConst;
+<span class="hljs-keyword">import</span> com.na.controller.vo.ResLoginVO;
+<span class="hljs-keyword">import</span> com.na.core.repo.ISysResourceRepo;
+<span class="hljs-keyword">import</span> com.na.core.repo.ISysRoleRepo;
+<span class="hljs-keyword">import</span> com.na.model.SysResourceModel;
+<span class="hljs-keyword">import</span> com.na.model.SysRoleModel;
+<span class="hljs-keyword">import</span> org.apache.commons.lang3.StringUtils;
+<span class="hljs-keyword">import</span> org.springframework.beans.factory.annotation.Autowired;
+<span class="hljs-keyword">import</span> org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+<span class="hljs-keyword">import</span> org.springframework.security.core.context.SecurityContextHolder;
+<span class="hljs-keyword">import</span> org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+<span class="hljs-keyword">import</span> org.springframework.stereotype.Service;
+
+<span class="hljs-keyword">import</span> javax.servlet.http.HttpServletRequest;
+<span class="hljs-keyword">import</span> javax.servlet.http.HttpServletResponse;
+<span class="hljs-keyword">import</span> java.util.*;
+<span class="hljs-keyword">import</span> java.util.concurrent.TimeUnit;
+<span class="hljs-keyword">import</span> java.util.stream.Collectors;
+
+<span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyAuthCheckedServiceImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">INaAuthCheckedService</span> {
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> NaAutoAuthConfig naAutoAuthConfig;
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> ISysRoleRepo sysRoleRepo;
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> ISysResourceRepo sysResourceRepo;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getToken</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response)</span> {
+        <span class="hljs-type">String</span> <span class="hljs-variable">authHeader</span> <span class="hljs-operator">=</span> StringUtils.trimToNull(request.getHeader(INaGlobalConst.SECURITY.HEADER_STRING));
+        <span class="hljs-keyword">if</span> (authHeader != <span class="hljs-literal">null</span> &amp;&amp; authHeader.startsWith(INaGlobalConst.SECURITY.JWT_TOKEN_PREFIX)) {
+            <span class="hljs-keyword">return</span> authHeader.substring(INaGlobalConst.SECURITY.JWT_TOKEN_PREFIX.length() + <span class="hljs-number">1</span>);
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span>;
+    }
+
+    <span class="hljs-comment">/**
+     * 【必须实现 第一效验】强制效验前端请求头的token和数据库中的是否一直，若想多个token生效 直接返回true
+     * <span class="hljs-doctag">@param</span> request
+     * <span class="hljs-doctag">@param</span> response
+     * <span class="hljs-doctag">@return</span>
+     */</span>
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">handleTokenChecked</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response)</span> {
+        <span class="hljs-type">String</span> <span class="hljs-variable">frontToken</span> <span class="hljs-operator">=</span> getToken(request, response);
+        <span class="hljs-type">String</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> NaJwtUtil.parseToken(frontToken, naAutoAuthConfig.getSigningKey());
+        <span class="hljs-keyword">if</span> (StringUtils.isNotEmpty(userId) &amp;&amp; SecurityContextHolder.getContext().getAuthentication() == <span class="hljs-literal">null</span>) {
+            <span class="hljs-type">String</span> <span class="hljs-variable">cacheToken</span> <span class="hljs-operator">=</span> NaCacheTemplate.getCache(MyConst.LOGIN.USER_TOKEN + userId, String.class);
+            <span class="hljs-keyword">if</span>(StringUtils.isNotEmpty(cacheToken)){
+                <span class="hljs-keyword">return</span> cacheToken.equals(frontToken);
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+
+
+    <span class="hljs-comment">/**
+     * 【必须实现 第二效验】设置用户简略信息，若api权限不想进入数据效验，携带正确的token即可，配合<span class="hljs-doctag">@NaAuthNotCheckedApi</span>注解使用。
+     * 例如: 获取 路由个人菜单树 所以人都有的权限。
+     * 将用户的基本信息存到AuthUserModel上下文中，后续在获取用户信息时，直接从上下文中获取，无需每次都去数据库查询。
+     * NaAuthUtil.getCurrentUser() 获取当前用户信息
+     * 返回true 表示设置成功，返回false 表示设置失败，后续会进行【第三效验】
+     * <span class="hljs-doctag">@param</span> request
+     * <span class="hljs-doctag">@param</span> response
+     * <span class="hljs-doctag">@return</span>
+     */</span>
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">setSimpleAuthUserModel</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response)</span> {
+        <span class="hljs-type">String</span> <span class="hljs-variable">frontToken</span> <span class="hljs-operator">=</span> getToken(request, response);
+        <span class="hljs-type">String</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> NaJwtUtil.parseToken(frontToken, naAutoAuthConfig.getSigningKey());
+        <span class="hljs-keyword">if</span> (StringUtils.isNotEmpty(userId) &amp;&amp; SecurityContextHolder.getContext().getAuthentication() == <span class="hljs-literal">null</span>) {
+            <span class="hljs-type">ResLoginVO</span> <span class="hljs-variable">loginVO</span> <span class="hljs-operator">=</span> NaCacheTemplate.getCache(MyConst.LOGIN.USER_INFO + frontToken, ResLoginVO.class);
+            <span class="hljs-keyword">if</span> (Objects.isNull(loginVO)) {
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+            }
+            <span class="hljs-type">AuthUserModel</span> <span class="hljs-variable">authUserModel</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AuthUserModel</span>();
+            authUserModel.setId(userId);
+            authUserModel.setTenantId(loginVO.getTenantId());
+            authUserModel.setUserType(loginVO.getUserType());
+            <span class="hljs-type">UsernamePasswordAuthenticationToken</span> <span class="hljs-variable">authentication</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UsernamePasswordAuthenticationToken</span>(authUserModel, <span class="hljs-literal">null</span>, authUserModel.getAuthorities());
+            authentication.setDetails(<span class="hljs-keyword">new</span> <span class="hljs-title class_">WebAuthenticationDetailsSource</span>().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+
+    <span class="hljs-comment">/**
+     * 【必须实现 第三效验】设置用户详细信息，对所有api进行以及【第二效验】失败，都会进入该方法
+     * <span class="hljs-doctag">@param</span> request
+     * <span class="hljs-doctag">@param</span> response
+     */</span>
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setAuthUserModel</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response)</span> {
+        <span class="hljs-type">String</span> <span class="hljs-variable">frontToken</span> <span class="hljs-operator">=</span> getToken(request, response);
+        <span class="hljs-keyword">if</span> (StringUtils.isNotEmpty(frontToken)) {
+            <span class="hljs-type">String</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> NaJwtUtil.parseToken(frontToken, naAutoAuthConfig.getSigningKey());
+            <span class="hljs-keyword">if</span> (StringUtils.isNotEmpty(userId) &amp;&amp; SecurityContextHolder.getContext().getAuthentication() == <span class="hljs-literal">null</span>) {
+
+                <span class="hljs-type">ResLoginVO</span> <span class="hljs-variable">loginVO</span> <span class="hljs-operator">=</span> NaCacheTemplate.getCache(MyConst.LOGIN.USER_INFO + frontToken, ResLoginVO.class);
+                <span class="hljs-keyword">if</span> (!Objects.isNull(loginVO)) {
+                    List&lt;SysRoleModel&gt; roleModels = sysRoleRepo.queryRoleByUserId(userId);
+
+                    <span class="hljs-type">Boolean</span> <span class="hljs-variable">exists</span> <span class="hljs-operator">=</span> roleModels.stream()
+                            .anyMatch(role -&gt; INaGlobalConst.SECURITY.SYS_MENU_DATA_SCOPE.ALL.equals(role.getDataScope()));
+                    List&lt;SysResourceModel&gt; resourceModels = <span class="hljs-literal">null</span>;
+                    <span class="hljs-keyword">if</span> (exists) {
+                        resourceModels = sysResourceRepo.queryAllResource();
+                    } <span class="hljs-keyword">else</span> {
+                        resourceModels = sysResourceRepo.queryResourceByUserId(userId);
+                    }
+
+                    Set&lt;String&gt; perms = resourceModels.stream()
+                            .map(SysResourceModel::getPerms)
+                            .filter(perm -&gt; perm != <span class="hljs-literal">null</span> &amp;&amp; !perm.isEmpty())
+                            .collect(Collectors.toSet());
+
+                    Set&lt;String&gt; requestUris = resourceModels.stream()
+                            .map(SysResourceModel::getRequestUri)
+                            .filter(perm -&gt; perm != <span class="hljs-literal">null</span> &amp;&amp; !perm.isEmpty())
+                            .collect(Collectors.toSet());
+
+                    List&lt;AuthSysRoleModel&gt; roles = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+                    <span class="hljs-keyword">for</span> (SysRoleModel roleModel : roleModels) {
+                        roles.add(AuthSysRoleModel.builder()
+                                .id(roleModel.getId())
+                                .roleName(roleModel.getName())
+                                .build());
+                    }
+                    <span class="hljs-type">AuthUserModel</span> <span class="hljs-variable">authUserModel</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AuthUserModel</span>();
+                    authUserModel.setId(userId);
+                    authUserModel.setTenantId(loginVO.getTenantId());
+                    authUserModel.setUserType(loginVO.getUserType());
+                    authUserModel.setRoles(roles);
+                    authUserModel.setPerms(perms);
+                    authUserModel.setRequestUris(requestUris);
+                    <span class="hljs-type">UsernamePasswordAuthenticationToken</span> <span class="hljs-variable">authentication</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UsernamePasswordAuthenticationToken</span>(authUserModel, <span class="hljs-literal">null</span>, authUserModel.getAuthorities());
+                    authentication.setDetails(<span class="hljs-keyword">new</span> <span class="hljs-title class_">WebAuthenticationDetailsSource</span>().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            }
+        }
+
+    }
+
+    <span class="hljs-comment">/**
+     * 【必须实现】获取当前用户拥有的api地址，用于【第三效验】
+     * <span class="hljs-doctag">@param</span> request
+     * <span class="hljs-doctag">@return</span>
+     */</span>
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> Set&lt;String&gt; <span class="hljs-title function_">getRequestApi</span><span class="hljs-params">(HttpServletRequest request)</span> {
+        <span class="hljs-keyword">return</span> NaAuthUtil.getCurrentUser().getRequestUris();
+    }
+}
+
+</code></pre>
+<h1 id="注意启动类配置">【注意】启动类配置</h1>
+<pre><code>如果你的包名不是以com.na开头的，需要配置
+@ComponentScan(basePackages = {&quot;com.na&quot;, &quot;com.ziji.baoming&quot;}) // 扫描多个包路径
+</code></pre>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>
