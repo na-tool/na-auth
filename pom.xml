@@ -6,7 +6,7 @@
     <artifactId>na-auth</artifactId>
     <name>${project.artifactId}</name>
     <groupId>io.github.na-tool</groupId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
     <description>权限认证模块</description>
 

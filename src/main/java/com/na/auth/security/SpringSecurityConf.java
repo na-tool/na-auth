@@ -42,6 +42,8 @@ public class SpringSecurityConf extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .cors() // ✅ 开启跨域支持，配合 CorsConfigurationSource 使用
+                .and()
                 // 去掉 CSRF
                 .csrf().disable()
                 // JWT Filter
