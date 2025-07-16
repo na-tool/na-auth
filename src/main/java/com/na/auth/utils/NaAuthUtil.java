@@ -25,27 +25,27 @@ public class NaAuthUtil {
     /**
      * 获取所有匿名访问类
      */
-    public static Set<String> getAnonymousAccess() {
-        HashSet<String> urls = new HashSet<>();
-        Map<RequestMappingInfo, HandlerMethod> handlerMethods = NaSpringContextUtil.getBean(RequestMappingHandlerMapping.class).getHandlerMethods();
-        for (Map.Entry<RequestMappingInfo, HandlerMethod> requestMethod : handlerMethods.entrySet()) {
-            HandlerMethod value = requestMethod.getValue();
-            NaAnonymousAccess methodAnnotation = value.getMethodAnnotation(NaAnonymousAccess.class);
-            if (methodAnnotation != null) {
-                Set<String> patterns = requestMethod.getKey().getPatternsCondition().getPatterns();
-                urls.addAll(patterns);
-            }
-        }
-        return urls;
-    }
+//    public static Set<String> getAnonymousAccess() {
+//        HashSet<String> urls = new HashSet<>();
+//        Map<RequestMappingInfo, HandlerMethod> handlerMethods = NaSpringContextUtil.getBean(RequestMappingHandlerMapping.class).getHandlerMethods();
+//        for (Map.Entry<RequestMappingInfo, HandlerMethod> requestMethod : handlerMethods.entrySet()) {
+//            HandlerMethod value = requestMethod.getValue();
+//            NaAnonymousAccess methodAnnotation = value.getMethodAnnotation(NaAnonymousAccess.class);
+//            if (methodAnnotation != null) {
+//                Set<String> patterns = requestMethod.getKey().getPatternsCondition().getPatterns();
+//                urls.addAll(patterns);
+//            }
+//        }
+//        return urls;
+//    }
 
     public static HandlerMethod getHandlerMethod(HttpServletRequest request) {
         // 获取当前请求对应的 HandlerMethod
         // 你需要从 Spring 的上下文中获取 HandlerMapping 并解析当前请求
         try {
             // 获取特定的 RequestMappingHandlerMapping Bean
-            //RequestMappingHandlerMapping handlerMapping = SpringContextUtil.getBean("requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
-            RequestMappingHandlerMapping handlerMapping = NaSpringContextUtil.getBean(RequestMappingHandlerMapping.class);
+            RequestMappingHandlerMapping handlerMapping = NaSpringContextUtil.getBean("requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
+//            RequestMappingHandlerMapping handlerMapping = NaSpringContextUtil.getBean(RequestMappingHandlerMapping.class);
             HandlerExecutionChain handlerExecutionChain = handlerMapping.getHandler(request);
             if (handlerExecutionChain != null) {
                 Object handler = handlerExecutionChain.getHandler();

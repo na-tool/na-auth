@@ -3,77 +3,57 @@ package com.na.auth.security;
 import com.na.auth.NaAutoAuthConfig;
 import com.na.auth.security.handler.AjaxAccessDeniedHandler;
 import com.na.auth.security.handler.AjaxAuthenticationEntryPoint;
-import com.na.auth.service.INaSecurityService;
-import com.na.auth.utils.NaAuthUtil;
-import com.na.common.constant.INaGlobalConst;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SpringSecurityConf extends WebSecurityConfigurerAdapter {
+@EnableMethodSecurity(prePostEnabled = true)
+public class SpringSecurityConf{
     @Autowired
     private AjaxAccessDeniedHandler accessDeniedHandler;
+
     @Autowired
     private AjaxAuthenticationEntryPoint authenticationEntryPoint;
-    @Autowired
-    private INaSecurityService naUserAuthService;
+
     @Autowired
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+
     @Autowired
     private NaAutoAuthConfig naAutoAuthConfig;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(naUserAuthService).passwordEncoder(passwordEncoder);
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .cors() // ✅ 开启跨域支持，配合 CorsConfigurationSource 使用
-                .and()
-                // 去掉 CSRF
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+                .cors().and()
                 .csrf().disable()
-                // JWT Filter
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                // 授权异常
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .accessDeniedHandler(accessDeniedHandler)
-                // 防止iframe造成跨域
                 .and()
-                .headers()
-                .frameOptions()
-                .disable()
-                // 不创建回话
+                .headers().frameOptions().disable()
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests()
-//                //定义哪些URL需要被保护
-//                .antMatchers(INaGlobalConst.SECURITY.ACTUATOR_URLS).authenticated()
-//                //定义哪些URL需要被保护、哪些不需要被保护
-//                .antMatchers(naAutoAuthConfig.skipApis()).permitAll()
-//                .antMatchers(NaAuthUtil.getAnonymousAccess().toArray(new String[0])).permitAll()
-                .antMatchers("/**").permitAll() // 允许所有请求
-                // 所有请求都需要认证
-                .anyRequest()
-                .authenticated();
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll() // ✅ 放行所有请求
+                )
+                .build();
+    }
 
-
+    // ✅ 就放在这个配置类中
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
 }
