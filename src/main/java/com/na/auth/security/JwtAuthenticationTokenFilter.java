@@ -54,14 +54,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 return;
             }
 
-            String key = naAutoAuthConfig != null ? naAutoAuthConfig.getKey() : null;
-            if (StringUtils.isEmpty(key)) {
-                throw new NaBusinessException(NaStatus.AUTHORIZATION_EXPIRED,null);
-            }
-
-            if(!LicenseValidator.isValidLicense(key)) {
-                throw new NaBusinessException(NaStatus.AUTHORIZATION_EXPIRED,null);
-            }
+//            String key = naAutoAuthConfig != null ? naAutoAuthConfig.getKey() : null;
+//            if (StringUtils.isEmpty(key)) {
+//                throw new NaBusinessException(NaStatus.AUTHORIZATION_EXPIRED,null);
+//            }
+//
+//            if(!LicenseValidator.isValidLicense(key)) {
+//                throw new NaBusinessException(NaStatus.AUTHORIZATION_EXPIRED,null);
+//            }
 
             // 获取处理当前请求的方法
             HandlerMethod handlerMethod = NaAuthUtil.getHandlerMethod(request);
