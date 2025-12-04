@@ -21,7 +21,7 @@ import java.util.*;
 @AllArgsConstructor
 @Builder
 public class NaAutoAuthConfig {
-    private String key; // 秘钥
+//    private String key; // 秘钥
 
     private String servlet; // servlet名称
 
