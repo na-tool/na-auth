@@ -9,7 +9,6 @@ import com.na.auth.utils.NaAuthUtil;
 import com.na.common.exceptions.NaBusinessException;
 import com.na.common.result.NaResult;
 import com.na.common.result.enums.NaStatus;
-import com.na.common.utils.LicenseValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,10 +55,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
             String key = naAutoAuthConfig != null ? naAutoAuthConfig.getKey() : null;
             if (StringUtils.isEmpty(key)) {
-                throw new NaBusinessException(NaStatus.AUTHORIZATION_EXPIRED,null);
-            }
-
-            if(!LicenseValidator.isValidLicense(key)) {
                 throw new NaBusinessException(NaStatus.AUTHORIZATION_EXPIRED,null);
             }
 
