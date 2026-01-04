@@ -6,6 +6,7 @@ import com.na.common.utils.NaSpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -71,17 +72,55 @@ public class NaAuthUtil {
         return method.isAnnotationPresent(annotationClass);
     }
 
-    public static Boolean checkUri(Set<String> requestUris, String requestUri) {
-        for (String uri : requestUris) {
-            // 将 uriPattern 转换为正则表达式
-            String regex = uri.replace("/*", "/[^/]*");
+    private static final AntPathMatcher matcher = new AntPathMatcher();
 
-            // 使用 Pattern 进行匹配
-            if (Pattern.matches(regex, requestUri)) {
+
+    /**
+     * 判断请求的URI是否在请求的URI集合中
+     * @param requestUris
+     * @param requestUri
+     * @return
+     */
+    public static boolean checkUri(Set<String> requestUris, String requestUri) {
+        if (requestUris == null || requestUris.isEmpty() || requestUri == null) {
+            return false;
+        }
+        // 去掉 query 参数
+        int idx = requestUri.indexOf('?');
+        if (idx != -1) {
+            requestUri = requestUri.substring(0, idx);
+        }
+
+        // 统一去掉末尾 /
+        if (requestUri.length() > 1 && requestUri.endsWith("/")) {
+            requestUri = requestUri.substring(0, requestUri.length() - 1);
+        }
+        for (String pattern : requestUris) {
+            String uriPattern = pattern;
+
+            if (uriPattern.endsWith("/") && uriPattern.length() > 1) {
+                uriPattern = uriPattern.substring(0, uriPattern.length() - 1);
+            }
+
+            if (matcher.match(uriPattern, requestUri)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static void main(String[] args) {
+        Set<String> requestUris = new HashSet<>();
+        requestUris.add("/api/v1");
+        requestUris.add("/api/v1/*");
+        requestUris.add("/api/v1/*/test");
+        requestUris.add("/api/v1/**");
+        requestUris.add("/api/v1/**/test");
+        System.out.println(checkUri(requestUris, "/api/v1"));
+        System.out.println(checkUri(requestUris, "/api/v1/test"));
+        System.out.println(checkUri(requestUris, "/api/v1/a/test"));
+        System.out.println(checkUri(requestUris, "/api/v1/a/a/test"));
+        System.out.println(checkUri(requestUris, "/api/v1"));
     }
 
     public static AuthUserModel getCurrentUser() {
