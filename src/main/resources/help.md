@@ -208,6 +208,29 @@ public class MyAuthCheckedServiceImpl implements INaAuthCheckedService {
 
 ```
 
+```checkUri
+
+/**
+ * AntPathMatcher 路径匹配规则说明：
+ *
+ * requestUris 中的规则        Ant 匹配语义                    /api/v1   /api/v1/test   /api/v1/a/test   /api/v1/a/a
+ * ---------------------------------------------------------------------------------------------------------------
+ * /api/v1                     精确匹配                        ✔         ✘              ✘                ✘
+ * /api/v1/*                   一层子路径                      ✘         ✔ (test)       ✘                ✘
+ * /api/v1/*/test              一层 + test                     ✘         ✘              ✔ (a/test)       ✘
+ * /api/v1/**                  任意层子路径（含 0 层）          ✔         ✔              ✔                ✔
+ * /api/v1/**/test             任意层 + test                   ✘         ✔ (test)       ✔ (a/test)       ✘
+ *
+ * 说明：
+ * 1. '*'  仅匹配一层路径，不包含 '/'。
+ * 2. '**' 可匹配任意层路径（可以是 0 层）。
+ * 3. '/api/v1/**' 可以匹配 '/api/v1' 本身，这是 AntPathMatcher 的标准行为。
+ * 4. 行为与 Spring MVC / Spring Security 中的 antMatchers 完全一致。
+ */
+
+
+```
+
 
 # 【注意】启动类配置
 ```
