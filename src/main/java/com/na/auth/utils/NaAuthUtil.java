@@ -85,7 +85,23 @@ public class NaAuthUtil {
         if (requestUris == null || requestUris.isEmpty() || requestUri == null) {
             return false;
         }
-        for (String uriPattern : requestUris) {
+        // 去掉 query 参数
+        int idx = requestUri.indexOf('?');
+        if (idx != -1) {
+            requestUri = requestUri.substring(0, idx);
+        }
+
+        // 统一去掉末尾 /
+        if (requestUri.length() > 1 && requestUri.endsWith("/")) {
+            requestUri = requestUri.substring(0, requestUri.length() - 1);
+        }
+        for (String pattern : requestUris) {
+            String uriPattern = pattern;
+
+            if (uriPattern.endsWith("/") && uriPattern.length() > 1) {
+                uriPattern = uriPattern.substring(0, uriPattern.length() - 1);
+            }
+
             if (matcher.match(uriPattern, requestUri)) {
                 return true;
             }
