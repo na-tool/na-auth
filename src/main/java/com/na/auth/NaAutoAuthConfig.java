@@ -30,6 +30,8 @@ public class NaAutoAuthConfig {
 
     private List<String> skipApis = new LinkedList<>(); // 跳过url
 
+    private List<String> forceApis = new LinkedList<>(); // 强制效验跳过url
+
     @Autowired
     private Environment environment;
 
@@ -64,6 +66,9 @@ public class NaAutoAuthConfig {
         // 如果 skipUrls 不为空，添加其中的元素
         if (CollectionUtils.isNotEmpty(skipApis)) {
             resultSet.addAll(skipApis);
+        }
+        if(CollectionUtils.isNotEmpty(forceApis)){
+            resultSet.removeAll(forceApis);
         }
 
         // 将 Set 转成 String[] 数组
