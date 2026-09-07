@@ -1,6 +1,6 @@
 package com.na.auth.security;
 
-import com.na.auth.NaAutoAuthConfig;
+import com.na.auth.AutoAuthConfig;
 import com.na.auth.security.handler.AjaxAccessDeniedHandler;
 import com.na.auth.security.handler.AjaxAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class SpringSecurityConf {
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
     @Autowired
-    private NaAutoAuthConfig naAutoAuthConfig;
+    private AutoAuthConfig autoAuthConfig;
 
     /**
      * 主过滤器链构建。
