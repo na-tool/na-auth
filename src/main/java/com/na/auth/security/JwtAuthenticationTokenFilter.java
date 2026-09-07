@@ -5,8 +5,7 @@ import com.na.auth.AutoAuthConfig;
 import com.na.auth.annotation.AnonymousAccess;
 import com.na.auth.annotation.AuthNotCheckedApi;
 import com.na.auth.service.IAuthCheckedService;
-import com.na.auth.service.IAuthCheckedService;
-import com.na.auth.utils.NaAuthUtil;
+import com.na.auth.utils.AuthUtil;
 import com.na.common.result.Result;
 import com.na.common.result.enums.Status;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +37,7 @@ import java.util.Set;
  *   <li>OPTIONS 预检请求直接放行</li>
  *   <li>方法带 {@link AnonymousAccess} 注解直接放行</li>
  *   <li>命中放行 URL 列表（skipApis）则放行</li>
- *   <li>执行 Token 校验：{@link INaAuthCheckedService#handleTokenChecked}</li>
+ *   <li>执行 Token 校验：{@link IAuthCheckedService#handleTokenChecked}</li>
  *   <li>方法带 {@link AuthNotCheckedApi} 注解时仅注入简单用户信息后放行</li>
  *   <li>否则注入完整用户信息 + 权限校验</li>
  * </ol>
@@ -70,11 +69,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             }
 
             // 2. 解析当前请求对应的 Controller 方法
-            HandlerMethod handlerMethod = NaAuthUtil.getHandlerMethod(request);
+            HandlerMethod handlerMethod = AuthUtil.getHandlerMethod(request);
             Method method = null;
             if (handlerMethod != null) {
                 method = handlerMethod.getMethod();
-                if (method != null && NaAuthUtil.hasAnnotation(method, AnonymousAccess.class)) {
+                if (method != null && AuthUtil.hasAnnotation(method, AnonymousAccess.class)) {
                     // 方法标注 @NaAnonymousAccess：完全匿名访问
                     filterChain.doFilter(request, response);
                     return;
@@ -94,7 +93,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 }
 
                 // 3.2 仅需登录信息、不需权限校验的接口
-                if (method != null && NaAuthUtil.hasAnnotation(method, AuthNotCheckedApi.class)) {
+                if (method != null && AuthUtil.hasAnnotation(method, AuthNotCheckedApi.class)) {
                     if (authCheckedService.setSimpleAuthUserModel(request, response)) {
                         filterChain.doFilter(request, response);
                         return;
@@ -122,7 +121,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     setResponse(response);
                     return;
                 }
-                if (!NaAuthUtil.checkUri(requestUris, requestUri)) {
+                if (!AuthUtil.checkUri(requestUris, requestUri)) {
                     setResponse(response);
                     return;
                 }
