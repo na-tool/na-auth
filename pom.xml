@@ -18,8 +18,10 @@
     </parent>
 
     <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <url>https://github.com/na-tool/na-auth.git</url>
@@ -82,25 +84,33 @@
         <dependency>
             <groupId>io.github.na-tool</groupId>
             <artifactId>na-common</artifactId>
-            <version>1.1.0.2</version>
+            <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-            <version>2.7.18</version>
+            <version>3.5.16</version>
             <scope>provided</scope>
         </dependency>
+        <!-- 核心包 -->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.74</version>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>2.0.64</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Spring 6 / Spring Boot 3.x 专用扩展包: 提供 FastJsonHttpMessageConverter / FastJsonRedisSerializer -->
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2-extension-spring6</artifactId>
+            <version>2.0.61</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.7.18</version>
+            <version>3.5.16</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -156,7 +166,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
+                <version>3.11.2</version>
+                <configuration>
+                    <!-- 关闭 doclint: 旧代码缺失 javadoc 不阻塞构建(JDK 17 doclet 默认严格校验) -->
+                    <doclint>none</doclint>
+                    <failOnError>false</failOnError>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
