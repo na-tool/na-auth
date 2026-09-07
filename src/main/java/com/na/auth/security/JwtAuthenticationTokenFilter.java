@@ -1,10 +1,11 @@
 package com.na.auth.security;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.na.auth.NaAutoAuthConfig;
-import com.na.auth.annotation.NaAnonymousAccess;
-import com.na.auth.annotation.NaAuthNotCheckedApi;
-import com.na.auth.service.INaAuthCheckedService;
+import com.na.auth.AutoAuthConfig;
+import com.na.auth.annotation.AnonymousAccess;
+import com.na.auth.annotation.AuthNotCheckedApi;
+import com.na.auth.service.IAuthCheckedService;
+import com.na.auth.service.IAuthCheckedService;
 import com.na.auth.utils.NaAuthUtil;
 import com.na.common.result.Result;
 import com.na.common.result.enums.Status;
@@ -35,10 +36,10 @@ import java.util.Set;
  * <p>每个请求只执行一次（继承自 {@link OncePerRequestFilter}），处理流程：</p>
  * <ol>
  *   <li>OPTIONS 预检请求直接放行</li>
- *   <li>方法带 {@link NaAnonymousAccess} 注解直接放行</li>
+ *   <li>方法带 {@link AnonymousAccess} 注解直接放行</li>
  *   <li>命中放行 URL 列表（skipApis）则放行</li>
  *   <li>执行 Token 校验：{@link INaAuthCheckedService#handleTokenChecked}</li>
- *   <li>方法带 {@link NaAuthNotCheckedApi} 注解时仅注入简单用户信息后放行</li>
+ *   <li>方法带 {@link AuthNotCheckedApi} 注解时仅注入简单用户信息后放行</li>
  *   <li>否则注入完整用户信息 + 权限校验</li>
  * </ol>
  *
@@ -52,10 +53,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
 
     @Autowired
-    private NaAutoAuthConfig naAutoAuthConfig;
+    private AutoAuthConfig autoAuthConfig;
 
     @Autowired
-    private INaAuthCheckedService naAuthCheckedService;
+    private IAuthCheckedService authCheckedService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -73,7 +74,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             Method method = null;
             if (handlerMethod != null) {
                 method = handlerMethod.getMethod();
-                if (method != null && NaAuthUtil.hasAnnotation(method, NaAnonymousAccess.class)) {
+                if (method != null && NaAuthUtil.hasAnnotation(method, AnonymousAccess.class)) {
                     // 方法标注 @NaAnonymousAccess：完全匿名访问
                     filterChain.doFilter(request, response);
                     return;
@@ -81,27 +82,27 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             }
 
             // 3. 判断是否命中放行 URL 列表；未命中则进入鉴权流程
-            boolean inSkipApis = Arrays.stream(naAutoAuthConfig.skipApis())
-                    .map(url -> naAutoAuthConfig.getServlet() + url)
+            boolean inSkipApis = Arrays.stream(autoAuthConfig.skipApis())
+                    .map(url -> autoAuthConfig.getServlet() + url)
                     .anyMatch(url -> PATH_MATCHER.match(url, request.getRequestURI()));
 
             if (!inSkipApis) {
                 // 3.1 校验 Token 合法性
-                if (!naAuthCheckedService.handleTokenChecked(request, response)) {
+                if (!authCheckedService.handleTokenChecked(request, response)) {
                     setResponse(response);
                     return;
                 }
 
                 // 3.2 仅需登录信息、不需权限校验的接口
-                if (method != null && NaAuthUtil.hasAnnotation(method, NaAuthNotCheckedApi.class)) {
-                    if (naAuthCheckedService.setSimpleAuthUserModel(request, response)) {
+                if (method != null && NaAuthUtil.hasAnnotation(method, AuthNotCheckedApi.class)) {
+                    if (authCheckedService.setSimpleAuthUserModel(request, response)) {
                         filterChain.doFilter(request, response);
                         return;
                     }
                 }
 
                 // 3.3 注入完整用户信息（含角色权限）
-                naAuthCheckedService.setAuthUserModel(request, response);
+                authCheckedService.setAuthUserModel(request, response);
 
                 if (SecurityContextHolder.getContext() == null
                         || SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -111,12 +112,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
                 // 3.4 权限 URL 匹配：去掉 context-path 前缀后再校验
                 String requestUri = request.getRequestURI();
-                String servletPrefix = naAutoAuthConfig.getServlet();
+                String servletPrefix = autoAuthConfig.getServlet();
                 if (!servletPrefix.isEmpty() && requestUri.startsWith(servletPrefix)) {
                     requestUri = requestUri.substring(servletPrefix.length());
                 }
 
-                Set<String> requestUris = naAuthCheckedService.getRequestApi(request);
+                Set<String> requestUris = authCheckedService.getRequestApi(request);
                 if (CollectionUtils.isEmpty(requestUris)) {
                     setResponse(response);
                     return;

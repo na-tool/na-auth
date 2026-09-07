@@ -1,5 +1,7 @@
 package com.na.auth.service;
 
+import com.na.auth.annotation.AuthNotCheckedApi;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Set;
@@ -17,7 +19,7 @@ import java.util.Set;
  *   <li>{@link #getRequestApi}：返回当前用户授权可访问的 URL 集合</li>
  * </ol>
  */
-public interface INaAuthCheckedService {
+public interface IAuthCheckedService {
 
     /**
      * 从请求中提取 Token。
@@ -34,7 +36,7 @@ public interface INaAuthCheckedService {
     /**
      * 注入简单用户信息到 SecurityContext（仅基本信息，不查权限）。
      *
-     * <p>用于 {@link com.na.auth.annotation.NaAuthNotCheckedApi} 标注的接口。</p>
+     * <p>用于 {@link AuthNotCheckedApi} 标注的接口。</p>
      *
      * @return 注入成功返回 {@code true}
      */

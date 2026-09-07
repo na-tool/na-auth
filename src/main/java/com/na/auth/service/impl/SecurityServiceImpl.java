@@ -1,13 +1,13 @@
 package com.na.auth.service.impl;
 
 import com.na.auth.model.AuthUserModel;
-import com.na.auth.service.INaSecurityService;
+import com.na.auth.service.ISecurityService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
- * {@link INaSecurityService} 占位实现。
+ * {@link ISecurityService} 占位实现。
  *
  * <p>仅返回空 {@link AuthUserModel}，用于未对接用户存储时的兜底。
  * 实际项目应覆盖此 Bean 以对接真实用户表 / SSO 数据源。</p>
@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
  * </pre>
  */
 @Service
-public class NaSecurityServiceImpl implements INaSecurityService {
+public class SecurityServiceImpl implements ISecurityService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

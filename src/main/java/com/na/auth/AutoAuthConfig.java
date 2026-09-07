@@ -35,7 +35,7 @@ import java.util.Set;
 @Data
 @Component
 @ConfigurationProperties(prefix = "na.auth")
-public class NaAutoAuthConfig {
+public class AutoAuthConfig {
 
     /** servlet 上下文名称（一般等于 server.servlet.context-path） */
     private String servlet;
