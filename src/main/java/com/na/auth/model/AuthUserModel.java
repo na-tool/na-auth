@@ -20,7 +20,7 @@ import java.util.Set;
  * 鉴权模块当前登录用户模型，实现 Spring Security {@link UserDetails}。
  *
  * <p>承载用户基础信息、角色、权限、租户上下文等，供过滤器写入 SecurityContext 后由业务层
- * 通过 {@link com.na.auth.utils.NaAuthUtil#getCurrentUser()} 获取。</p>
+ * 通过 {@link com.na.auth.utils.AuthUtil#getCurrentUser()} 获取。</p>
  *
  * <p>注意：{@link #isEnabled()} 返回 {@code false} 表示禁用 Spring Security 自带的表单密码登录，
  * 本模块采用 JWT 方案不依赖密码校验流程。</p>

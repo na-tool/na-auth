@@ -142,7 +142,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private void setResponse(HttpServletResponse response) throws IOException {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setStatus(HttpServletResponse.SC_OK);
-//        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         response.getWriter().write(JSONObject.toJSONString(Result.error(Status.USER_NO_ACCESS)));
     }
 }
